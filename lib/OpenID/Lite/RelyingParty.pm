@@ -214,7 +214,8 @@ OpenID::Lite::RelyingParty - OpenID RelyingParty support module
         my $user_suplied_identifier = $self->req->param('openid_identifier');
         return unless $self->validate( $user_suplied_identifier );
 
-        my $checkid_request = $openid->begin( $user_suplied_identifier );
+        my $checkid_request = $openid->begin( $user_suplied_identifier )
+            or $self->show_error( $openid->errstr );
 
         my $sreg = OpenID::Lite::Extension::SREG::Request->new;
         $sreg->request_fields(qw(nickname));
@@ -240,8 +241,8 @@ OpenID::Lite::RelyingParty - OpenID RelyingParty support module
             # openid login successfully completed.
             # you should save the verified identifier.
 
-            my $claimed_identifier = $res->claimed_identifier;
-            my $identity           = $res->identity;
+            my $display_identifier = $res->display_identifier;
+            my $identity_url       = $res->identity_url;
 
         } elsif ( $res->is_canceled ) {
 
@@ -399,7 +400,8 @@ simple API example
         my $identifier = $your_app->req->param('openid_identifier');
         # $your_app->validate_identifier( $identifier );
 
-        my $checkid_request = $your_app->begin( $identifier );
+        my $checkid_request = $openid_rp->begin( $identifier )
+            or $your_app->show_error( $your_app->openid->errstr );
 
         my $endpoint_url = $checkid_request->redirect_url(
             return_to => q{http://myapp.com/return_to},
@@ -418,7 +420,7 @@ simple API and limiting OP and reducing discovery-cost.
 
         my $service = OpenID::Lite::RelyingParty::Discover::Service->new;
         $service->add_type( SERVER_2_0 );
-        $service->add_uri( q{http://op.com/endpoint} );
+        $service->add_uri( q{http://example.com/op/endpoint} );
 
         my $checkid_request = $openid_rp->begin_without_discovery( $service );
 
@@ -430,7 +432,7 @@ simple API and limiting OP and reducing discovery-cost.
         return $your_app->redirect( $endpoint_url );
     }
 
-row API example
+raw API example
 
     sub login {
         my $your_app = shift;
@@ -552,8 +554,8 @@ row API example
             # openid login successfully completed.
             # you should save the verified identifier.
 
-            my $claimed_identifier = $res->claimed_identifier;
-            my $identity           = $res->identity;
+            my $display_identifier = $res->display_identifier;
+            my $identity_url       = $res->identity_url;
 
         } elsif ( $res->is_canceled ) {
 

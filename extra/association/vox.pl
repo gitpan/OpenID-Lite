@@ -5,7 +5,6 @@ use warnings;
 
 use lib '../../lib';
 
-#use Moose;
 use OpenID::Lite::RelyingParty::Discover::Service;
 use OpenID::Lite::RelyingParty::Discover;
 use OpenID::Lite::Identifier;
@@ -20,13 +19,17 @@ use Data::Dump qw(dump);
 use Perl6::Say;
 use MIME::Base64;
 
-my $service = OpenID::Lite::RelyingParty::Discover::Service->new(
-    types => [
-        "http://specs.openid.net/auth/2.0/server",
-        "http://openid.net/srv/ax/1.0",
-    ],
-    uris => ["https://www.google.com/accounts/o8/ud?source=gmail"],
+my $identifier = q{lyokato.vox.com};
+my $id = OpenID::Lite::Identifier->normalize($identifier);
+my $disco = OpenID::Lite::RelyingParty::Discover->new(
+#agent=>OpenID::Lite::Agent::Dump->new
 );
+my $servers = $disco->discover($id)
+    or die $disco->errstr;
+say dump($servers);
+
+my $service = $servers->[0];
+
 my $assoc = OpenID::Lite::RelyingParty::Associator->new(
     assoc_type => HMAC_SHA256,
     #assoc_type   => HMAC_SHA1,
