@@ -4,11 +4,10 @@ author:
   - 'Lyo Kato, <lyo.kato@gmail.com>'
 build_requires:
   ExtUtils::MakeMaker: 6.42
-  Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.850'
+generated_by: 'Module::Install version 1.00'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -18,6 +17,7 @@ no_index:
   directory:
     - inc
     - t
+    - xt
 requires:
   Any::Moose: 0.01
   Crypt::DH::GMP: 0.00005
@@ -45,4 +45,4 @@ requires:
   XRI::Resolution::Lite: 0.02
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01_01
+version: 0.01_03
